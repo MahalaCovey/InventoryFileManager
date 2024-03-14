@@ -29,7 +29,7 @@ int main()
 	int choice; // User's menu choice
 	int recordNum; // Number for record user wants to display
 
-	fstream inventory("inventory.dat", ios::in | ios::out | ios::trunc | ios::binary ); // Works??
+	fstream inventory("inventory.dat", ios::in | ios::out | ios::trunc | ios::binary ); 
 
 	// Test for file errors
 	if (!inventory)
@@ -117,7 +117,7 @@ void createFile(fstream &file)
 	Product record2 = { 12, "Cat", 800, 4 };
 	Product record3 = { 10101010, "Bird", 0.99, 500 };
 	Product record4 = { 784723, "Fish", 49.95, 509 };
-	Product record5 = { 1818, "Zebra", 14500 };
+	Product record5 = { 1818, "Zebra", 14500, 1 };
 
 	// Write records to file
 	file.write(reinterpret_cast<char *>(&record1), sizeof(record1));
@@ -146,9 +146,10 @@ void displayFile(fstream &file)
 	while (!file.eof())
 	{
 		cout << "Record #" << recordNum << endl;
-		cout << "Product number: " << record.number << endl;
+		cout << "Product number: #" << record.number << endl;
 		cout << "Product name: " << record.name << endl;
-		cout << "Price: " << record.price << endl;
+		cout << "Price: $" << record.price << endl;
+		cout << "Quantity: " << record.quantity << endl;
  
 		file.read(reinterpret_cast<char *>(&record), sizeof(record)); // Read next record
 
@@ -171,9 +172,10 @@ void displayRecord(fstream &file, int inicatedRec)
 	file.read(reinterpret_cast<char*>(&record), sizeof(record)); // Read record
 
 	// Display indicated record contents
-	cout << "Product number: " << record.number << endl;
-	cout << "Product name: " << record.name << endl;
-	cout << "Price: " << record.price << endl;
+	cout << "Product number: #" << record.number << endl;
+	cout << "Product name: #" << record.name << endl;
+	cout << "Price: $" << record.price << endl;
+	cout << "Quantity: " << record.quantity << endl;
 }
 
 //****************************************************************************************************************************************************************************
@@ -189,6 +191,10 @@ void modifyRecord(fstream& file)
 	cout << "Enter record number to be modified: "; // Get record number
 	cin >> recordNum;
 
+
+	file.clear(); // Clear eof flag
+	file.seekp(recordNum * sizeof(record), ios::beg); // Seek indicated record
+
 	// Get new Product values
 	cout << "Enter the new data.";
 	cout << "\nProduct number: ";
@@ -201,9 +207,6 @@ void modifyRecord(fstream& file)
 	cout << "Quantity: ";
 	cin >> record.quantity;
 
-	// Seek indicated record
-	file.seekp(recordNum * sizeof(record), ios::beg);
-
-	// Write new values to record
+	// Write to record
 	file.write(reinterpret_cast<char*>(&record), sizeof(record));
 }
