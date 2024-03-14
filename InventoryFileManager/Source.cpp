@@ -173,7 +173,7 @@ void displayRecord(fstream &file, int inicatedRec)
 
 	// Display indicated record contents
 	cout << "Product number: #" << record.number << endl;
-	cout << "Product name: #" << record.name << endl;
+	cout << "Product name: " << record.name << endl;
 	cout << "Price: $" << record.price << endl;
 	cout << "Quantity: " << record.quantity << endl;
 }
