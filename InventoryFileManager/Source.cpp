@@ -50,16 +50,19 @@ int main()
 		{
 		case 1: // Display the entire inventory
 			displayFile(inventory);
+			cout << endl;
 			break;
 
 		case 2: // Display a particular product
 			cout << "Enter record number to be displayed: "; // Get record number
 			cin >> recordNum;
 			displayRecord(inventory, recordNum);
+			cout << endl;
 			break;
 
 		case 3: // Modify a program
 			modifyRecord(inventory);
+			cout << endl;
 			break;
 
 		case 4: // Exit the program
@@ -110,7 +113,7 @@ int showMenu()
 void createFile(fstream &file)
 {
 	// Initialize records
-	Product record1 = { 12345, "Dogs", 11.99, 5 };
+	Product record1 = { 12345, "Dog", 11.99, 5 };
 	Product record2 = { 12, "Cat", 800, 4 };
 	Product record3 = { 10101010, "Bird", 0.99, 500 };
 	Product record4 = { 784723, "Fish", 49.95, 509 };
@@ -131,7 +134,7 @@ void createFile(fstream &file)
 void displayFile(fstream &file)
 {
 	int recordNum = 0; // Number of a given record
-	Product record; // To hold record info
+	Product record; // Holds record info to read
 
 	file.clear(); // Clear eof flag
 	file.seekg(0L, ios::beg); // Seek first record
@@ -158,9 +161,9 @@ void displayFile(fstream &file)
 // matching record's contents are displayed to the console.																										  *
 //*****************************************************************************************************************************************************************
 
-void displayRecord(fstream& file, int inicatedRec)
+void displayRecord(fstream &file, int inicatedRec)
 {
-	Product record; // To hold record info
+	Product record; // Holds record info to read
 
 	file.clear(); // Clear eof flag
 	file.seekg(inicatedRec * sizeof(record), ios::beg); // Seek indicated record
@@ -171,4 +174,36 @@ void displayRecord(fstream& file, int inicatedRec)
 	cout << "Product number: " << record.number << endl;
 	cout << "Product name: " << record.name << endl;
 	cout << "Price: " << record.price << endl;
+}
+
+//****************************************************************************************************************************************************************************
+// The modifyRecord function gets the record number the user wants to edit, along with the record's new values. It seeks the record in the file through the filstream object *
+// parameter file. Lastly, the record's new values are written to the file and replace the old ones.																		 *
+//****************************************************************************************************************************************************************************
+
+void modifyRecord(fstream& file)
+{
+	int recordNum; // Number for record user wants to modify
+	Product record; // Holds record info to write
+
+	cout << "Enter record number to be modified: "; // Get record number
+	cin >> recordNum;
+
+	// Get new Product values
+	cout << "Enter the new data.";
+	cout << "\nProduct number: ";
+	cin >> record.number;
+	cout << "Product name: ";
+	cin.ignore(); // Ignore character in keyboard buffer
+	cin.getline(record.name, NAME_SIZE);
+	cout << "Price: ";
+	cin >> record.price;
+	cout << "Quantity: ";
+	cin >> record.quantity;
+
+	// Seek indicated record
+	file.seekp(recordNum * sizeof(record), ios::beg);
+
+	// Write new values to record
+	file.write(reinterpret_cast<char*>(&record), sizeof(record));
 }
